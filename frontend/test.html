@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>测试数据加载</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #008D84; color: white; }
+    .result { background: white; color: black; padding: 20px; margin-top: 20px; border-radius: 10px; }
+    .error { color: red; }
+    .success { color: green; }
+  </style>
+</head>
+<body>
+  <h1>测试数据加载</h1>
+  <div id="status">正在加载...</div>
+  <div id="result" class="result"></div>
+
+  <script>
+    async function testAPI() {
+      const statusEl = document.getElementById('status');
+      const resultEl = document.getElementById('result');
+      
+      try {
+        console.log('开始请求 API...');
+        const response = await fetch('http://localhost:3000/api/parts');
+        console.log('响应状态:', response.status);
+        
+        if (!response.ok) {
+          throw new Error('HTTP 错误：' + response.status);
+        }
+        
+        const data = await response.json();
+        console.log('数据加载成功，记录数:', data.length);
+        
+        statusEl.innerHTML = '<span class="success">✅ 数据加载成功！</span>';
+        resultEl.innerHTML = `
+          <p><strong>记录总数：</strong>${data.length}</p>
+          <p><strong>前 5 条数据：</strong></p>
+          <ul>
+            ${data.slice(0, 5).map(p => 
+              `<li>${p.partName} - ${p.specification} - ¥${p.marketPrice}</li>`
+            ).join('')}
+          </ul>
+        `;
+      } catch (err) {
+        console.error('错误:', err);
+        statusEl.innerHTML = '<span class="error">❌ 加载失败：' + err.message + '</span>';
+        resultEl.innerHTML = '<p>请检查：</p><ul><li>后端服务是否运行在 http://localhost:3000</li><li>浏览器控制台是否有 CORS 错误</li></ul>';
+      }
+    }
+    
+    testAPI();
+  </script>
+</body>
+</html>

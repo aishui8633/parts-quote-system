@@ -1,0 +1,15 @@
+{
+  "name": "parts-quote-system",
+  "version": "1.0.0",
+  "description": "简单实用的工业零件查询和报价系统。",
+  "main": "import_excel.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>山河智能配件查询报价系统</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Microsoft YaHei', Arial, sans-serif;
+      background: #008D84;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .logo-container {
+      background: #008D84;
+      padding: 15px 30px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .logo { height: 80px; width: auto; }
+    .header {
+      background: #008D84;
+      padding: 20px 30px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .header h1 { color: white; font-size: 24px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .header p { color: rgba(255,255,255,0.9); margin-top: 5px; }
+    .search-box {
+      background: #008D84;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .search-input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 6px;
+      font-size: 16px;
+      background: rgba(255,255,255,0.95);
+      transition: all 0.3s;
+    }
+    .search-input:focus { outline: none; border-color: white; background: white; }
+    .results-table {
+      background: #008D84;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 2px;
+    }
+    table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+    th {
+      background: linear-gradient(90deg, #008D84 0%, #007a72 100%);
+      color: white;
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    td { padding: 12px 15px; border-bottom: 1px solid #e0e0e0; }
+    tr:hover { background: #f0fffe; }
+    .price { color: #e74c3c; font-weight: bold; font-size: 16px; }
+    .actions { display: flex; gap: 10px; }
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    .btn-print { background: #FF6600; color: white; }
+    .btn-print:hover { background: #e65c00; }
+    .btn-quote { background: #003366; color: white; }
+    .btn-quote:hover { background: #002244; }
+    .empty-state { text-align: center; padding: 40px; color: #999; }
+    .footer {
+      background: #008D84;
+      padding: 20px 30px;
+      border-radius: 10px;
+      margin-top: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.2);
+      text-align: center;
+    }
+    .footer p { color: white; font-size: 16px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    /* 手机端自适应 */
+    @media (max-width: 768px) {
+      body { padding: 10px; }
+      .container { max-width: 100%; }
+      .logo-container { padding: 10px 15px; }
+      .logo { height: 60px; }
+      .header { padding: 15px 20px; }
+      .header h1 { font-size: 18px; }
+      .header p { font-size: 12px; }
+      .search-box { padding: 15px; }
+      .search-input { font-size: 14px; padding: 10px; }
+      .results-table { overflow-x: auto; }
+      table { font-size: 12px; min-width: 600px; }
+      th, td { padding: 8px 10px; }
+      .btn { padding: 6px 12px; font-size: 12px; }
+      .footer { padding: 15px 20px; }
+      .footer p { font-size: 14px; }
+    }
+
+    /* 小屏幕手机 */
+    @media (max-width: 480px) {
+      .logo { height: 50px; }
+      .header h1 { font-size: 16px; }
+      .header p { font-size: 11px; }
+      table { font-size: 11px; }
+      th, td { padding: 6px 8px; }
+      .btn { padding: 5px 10px; font-size: 11px; }
+      .actions { flex-direction: column; gap: 5px; }
+      .btn { width: 100%; }
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .search-box, .actions, .header p, .footer { display: none; }
+      .header { box-shadow: none; border: 1px solid #ddd; }
+      .results-table { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <div class="logo-container">
+        <img src="logo.png" alt="山河智能 LOGO" class="logo">
+      </div>
+      <div class="header">
+        <h1>🔧 山河智能配件查询报价系统</h1>
+        <p>品牌：山河智能 | 单位：PCS | {{ currentDate }} 当期牌价</p>
+      </div>
+      <div class="search-box">
+        <input type="text" class="search-input" placeholder="🔍 搜索零件名称或规格型号..." v-model="searchKeyword">
+      </div>
+      <div class="results-table">
+        <table v-if="filteredParts.length > 0">
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>零件名称</th>
+              <th>规格型号</th>
+              <th>品牌</th>
+              <th>单位</th>
+              <th>当期含税牌价（元）</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(part, index) in filteredParts" :key="part.id">
+              <td>{{ index + 1 }}</td>
+              <td>{{ part.partName }}</td>
+              <td>{{ part.specification }}</td>
+              <td>{{ part.brand }}</td>
+              <td>{{ part.unit }}</td>
+              <td class="price">¥{{ Math.floor(part.marketPrice).toFixed(2) }}</td>
+              <td>
+                <div class="actions">
+                  <button class="btn btn-print" @click="printQuote(part)">打印</button>
+                  <button class="btn btn-quote" @click="exportQuote(part)">导出</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="empty-state" v-else>
+          <p v-if="searchKeyword">😕 没有找到匹配的配件</p>
+          <p v-else>👆 请输入零件名称或规格型号进行搜索</p>
+        </div>
+      </div>
+      <div class="footer">
+        <p><strong>联系电话：18773158373</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+    
+    createApp({
+      data() {
+        return {
+          parts: [],
+          searchKeyword: localStorage.getItem('lastSearch') || '',
+          currentDate: new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })
+        }
+      },
+      computed: {
+        filteredParts() {
+          if (!this.searchKeyword) {
+            return [];
+          }
+          const keyword = this.searchKeyword.toLowerCase();
+          // 保存搜索关键词到本地存储
+          localStorage.setItem('lastSearch', this.searchKeyword);
+          return this.parts.filter(function(part) {
+            var partName = (part.partName || '').toLowerCase();
+            var spec = (part.specification || '').toString().toLowerCase();
+            return partName.includes(keyword) || spec.includes(keyword);
+          });
+        }
+      },
+      mounted() {
+        this.loadParts();
+      },
+      methods: {
+        async loadParts() {
+          try {
+            const response = await fetch('/api/parts');
+            this.parts = await response.json();
+            console.log('加载成功，零件数量:', this.parts.length);
+          } catch (err) {
+            console.error('加载数据失败:', err);
+            alert('加载数据失败：' + err.message);
+          }
+        },
+        printQuote(part) {
+          const printWindow = window.open('', '_blank');
+          const content = '<html><head><title>配件报价单 - ' + part.partName + '</title>' +
+            '<style>body{font-family:"Microsoft YaHei",Arial;padding:40px}h1{color:#333;border-bottom:2px solid #008D84;padding-bottom:10px}.company{color:#008D84;font-size:18px;margin-bottom:10px}.info{margin:20px 0}.info p{margin:10px 0;font-size:16px}.price{color:#e74c3c;font-size:24px;font-weight:bold}.footer{margin-top:40px;color:#999;font-size:14px}</style>' +
+            '</head><body><h1>山河智能配件报价单</h1>' +
+            '<p class="company"><strong>湖南正天机电设备有限公司</strong></p>' +
+            '<div class="info">' +
+            '<p><strong>零件名称：</strong>' + part.partName + '</p>' +
+            '<p><strong>规格型号：</strong>' + part.specification + '</p>' +
+            '<p><strong>品牌：</strong>' + part.brand + '</p>' +
+            '<p><strong>单位：</strong>' + part.unit + '</p>' +
+            '<p><strong>当期含税牌价：</strong><span class="price">¥' + Math.floor(part.marketPrice).toFixed(2) + '</span></p>' +
+            '</div><div class="footer">' +
+            '<p>报价日期：' + new Date().toLocaleDateString('zh-CN') + '</p>' +
+            '<p>此报价单仅供参考，具体价格以实际交易为准</p>' +
+            '</div><script>window.onload=function(){window.print();}<\/script>' +
+            '</body></html>';
+          printWindow.document.write(content);
+          printWindow.document.close();
+        },
+        exportQuote(part) {
+          const csvContent = '零件名称，规格型号，品牌，单位，当期含税牌价\n' +
+            part.partName + ',' + part.specification + ',' + part.brand + ',' + part.unit + ',' + Math.floor(part.marketPrice);
+          const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = '报价单_' + part.partName + '_' + new Date().getTime() + '.csv';
+          link.click();
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
