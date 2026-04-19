@@ -1,19 +1,18 @@
 import openpyxl
 import json
+import shutil
 
-EXCEL_PATH = r'C:\Users\aishu\.openclaw\workspace\parts-quote-system\data\山河钻机海螺配件价格改(4.19)_1242.xlsx'
+EXCEL_PATH = r'C:\Users\aishu\.openclaw\workspace\parts-quote-system\data\山河钻机海螺配件价格汇总(4.19)_12436.xlsx'
 JSON_PATH = r'C:\Users\aishu\.openclaw\workspace\parts-quote-system\data\parts.json'
 BACKUP_PATH = r'C:\Users\aishu\.openclaw\workspace\parts-quote-system\data\parts.json.backup'
 
-# 备份旧数据
-import shutil
 shutil.copy2(JSON_PATH, BACKUP_PATH)
 
 wb = openpyxl.load_workbook(EXCEL_PATH)
 ws = wb.active
 
 parts = []
-for row in ws.iter_rows(min_row=2, values_only=True):  # 跳过表头
+for row in ws.iter_rows(min_row=2, values_only=True):
     idx, spec, name, price = row[0], row[1], row[2], row[3]
     if idx is None:
         continue
