@@ -9966,5 +9966,253 @@
     "specification": "730403003096",
     "unit": "PCS",
     "marketPrice": 298
-  }
+  },
+  {
+    "id": 1247,
+    "brand": "山河智能",
+    "partName": "扑尘罩组件",
+    "specification": "80BP07010000",
+    "unit": "PCS",
+    "marketPrice": 12297
+   },
+   {
+	  "id": 1248,
+	  "brand": "山河智能",
+	  "partName": "胶管",
+	  "specification": "73050200C092",
+	  "unit": "PCS",
+	  "marketPrice": 242
+	},
+	{
+	  "id": 1249,
+	  "brand": "山河智能",
+	  "partName": "胶管",
+	  "specification": "730502001608",
+	  "unit": "PCS",
+	  "marketPrice": 194
+	},
+	{
+	  "id": 1250,
+	  "brand": "山河智能",
+	  "partName": "启动马达",
+	  "specification": "5614336",
+	  "unit": "PCS",
+	  "marketPrice": 2606
+	},
+	{
+	  "id": 1251,
+	  "brand": "山河智能",
+	  "partName": "发电机",
+	  "specification": "3698351",
+	  "unit": "PCS",
+	  "marketPrice": 1890
+	},
+	{
+	  "id": 1252,
+	  "brand": "山河智能",
+	  "partName": "空调压缩机",
+	  "specification": "750201013784",
+	  "unit": "PCS",
+	  "marketPrice": 2115
+	},
+	{
+	  "id": 1253,
+	  "brand": "山河智能",
+	  "partName": "2寸风管CACA-940",
+	  "specification": "730501009283",
+	  "unit": "PCS",
+	  "marketPrice": 536
+	},
+	{
+	  "id": 1254,
+	  "brand": "山河智能",
+	  "partName": "增压器进气橡胶弯管",
+	  "specification": "320040001375",
+	  "unit": "PCS",
+	  "marketPrice": 543
+	},
+	{
+	  "id": 1255,
+	  "brand": "山河智能",
+	  "partName": "重型软管卡箍",
+	  "specification": "751008000227",
+	  "unit": "PCS",
+	  "marketPrice": 89
+	},
+	{
+	  "id": 1256,
+	  "brand": "山河智能",
+	  "partName": "气门室盖",
+	  "specification": "6472986",
+	  "unit": "PCS",
+	  "marketPrice": 1860
+	},
+	{
+	  "id": 1257,
+	  "brand": "山河智能",
+	  "partName": "气门室盖垫",
+	  "specification": "5613687",
+	  "unit": "PCS",
+	  "marketPrice": 185
+	},
+	{
+	  "id": 1258,
+	  "brand": "山河智能",
+	  "partName": "潜孔钻机O形密封圈包",
+	  "specification": "856598010000.S1",
+	  "unit": "PCS",
+	  "marketPrice": 288
+	},
+    {
+      "id": 1259,
+      "brand": "山河智能",
+      "partName": "短接头D133X500",
+      "specification": "750609001296",
+      "unit": "PCS",
+      "marketPrice": 2527
+    },
+	{
+	  "id": 1260,
+	  "brand": "山河智能",
+	  "partName": "三联阀密封包",
+	  "specification": "730302900927",
+	  "unit": "PCS",
+	  "marketPrice": 1560
+	},
+	{
+	  "id": 1261,
+	  "brand": "山河智能",
+	  "partName": "大架垫板",
+	  "specification": "302030002215.A1",
+	  "unit": "PCS",
+	  "marketPrice": 466
+	},
+	{
+	  "id": 1262,
+	  "brand": "山河智能",
+	  "partName": "潜孔钻机O形密封圈包",
+	  "specification": "856598010000",
+	  "unit": "PCS",
+	  "marketPrice": 288
+	},
+	{
+	  "id": 1263,
+	  "brand": "山河智能",
+	  "partName": "链轨总成",
+	  "specification": "750101010074",
+	  "unit": "PCS",
+	  "marketPrice": 26049
+	},
+	{
+	  "id": 1264,
+	  "brand": "山河智能",
+	  "partName": "链板螺栓",
+	  "specification": "750101010060",
+	  "unit": "PCS",
+	  "marketPrice": 30
+	},
+	{
+	  "id": 1265,
+	  "brand": "山河智能",
+	  "partName": "履带板",
+	  "specification": "750101010091",
+	  "unit": "PCS",
+	  "marketPrice": 354
+	},
+	{
+	  "id": 1266,
+	  "brand": "山河智能",
+	  "partName": "螺母",
+	  "specification": "750101010061",
+	  "unit": "PCS",
+	  "marketPrice": 7
+	},
+	{
+	  "id": 1267,
+	  "brand": "山河智能",
+	  "partName": "丝扣润滑系统",
+	  "specification": "30AALS001101",
+	  "unit": "PCS",
+	  "marketPrice": 8500
+	},
+	{
+	  "id": 1268,
+	  "brand": "山河智能",
+	  "partName": "压力传感器",
+	  "specification": "4358810",
+	  "unit": "PCS",
+	  "marketPrice": 395
+	},
+	{
+	  "id": 1269,
+	  "brand": "山河智能",
+	  "partName": "齿圈螺丝",
+	  "specification": "701104016025",
+	  "unit": "PCS",
+	  "marketPrice": 4
+	},
+	{
+	  "id": 1270,
+	  "brand": "山河智能",
+	  "partName": "缓冲接头",
+	  "specification": "304990001120.S3",
+	  "unit": "PCS",
+	  "marketPrice": 4725
+	},
+	{
+	  "id": 1271,
+	  "brand": "山河智能",
+	  "partName": "缓冲接头",
+	  "specification": "304990001120",
+	  "unit": "PCS",
+	  "marketPrice": 4725
+	},
+	{
+	  "id": 1272,
+	  "brand": "山河智能",
+	  "partName": "胶管总成",
+	  "specification": "73050200E438",
+	  "unit": "PCS",
+	  "marketPrice": 711
+	},
+	{
+	  "id": 1273,
+	  "brand": "山河智能",
+	  "partName": "集尘袋350X700",
+	  "specification": "750732020098",
+	  "unit": "PCS",
+	  "marketPrice": 792
+	},
+	{
+	  "id": 1274,
+	  "brand": "山河智能",
+	  "partName": "胶管总成",
+	  "specification": "73050100A438",
+	  "unit": "PCS",
+	  "marketPrice": 824
+	},
+	{
+	  "id": 1275,
+	  "brand": "山河智能",
+	  "partName": "胶管总成",
+	  "specification": "73050100A439",
+	  "unit": "PCS",
+	  "marketPrice": 210
+	},
+	{
+	  "id": 1276,
+	  "brand": "山河智能",
+	  "partName": "胶管总成",
+	  "specification": "73050200E442",
+	  "unit": "PCS",
+	  "marketPrice": 406
+	},
+	{
+	  "id": 1277,
+	  "brand": "山河智能",
+	  "partName": "球阀",
+	  "specification": "770107900171",
+	  "unit": "PCS",
+	  "marketPrice": 50
+	}
 ]

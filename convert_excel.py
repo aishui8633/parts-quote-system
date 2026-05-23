@@ -2,7 +2,7 @@ import openpyxl
 import json
 import shutil
 
-EXCEL_PATH = r'C:\Users\aishu\.openclaw\workspace\parts-quote-system\data\山河钻机海螺配件价格汇总(4.19)_12436.xlsx'
+EXCEL_PATH = r'D:\OneDrive\山河配件报价系统\山河钻机海螺配件价格汇总(4.19)_1246.xlsx'
 JSON_PATH = r'C:\Users\aishu\.openclaw\workspace\parts-quote-system\data\parts.json'
 BACKUP_PATH = r'C:\Users\aishu\.openclaw\workspace\parts-quote-system\data\parts.json.backup'
 

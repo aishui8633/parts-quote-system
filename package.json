@@ -1,6 +1,6 @@
 {
   "name": "parts-quote-system",
-  "version": "1.0.0",
+  "version": "1.26.5.23",
   "description": "简单实用的工业零件查询和报价系统。",
   "main": "import_excel.js",
   "scripts": {

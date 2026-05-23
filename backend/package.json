@@ -1,6 +1,6 @@
 {
   "name": "parts-quote-backend",
-  "version": "1.0.0",
+  "version": "1.26.5.23",
   "description": "山河智能配件报价系统后端",
   "main": "server.js",
   "scripts": {
