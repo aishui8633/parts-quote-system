@@ -13,6 +13,7 @@ RUN cd backend && npm install --production
 # 复制项目文件
 COPY backend/ ./backend/
 COPY frontend/ ./frontend/
+COPY admin/ ./admin/
 COPY data/ ./data/
 
 # 暴露端口
