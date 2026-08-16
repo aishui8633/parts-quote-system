@@ -123,6 +123,7 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(ADMIN_DIR, 'index.html'));
 });
 
+app.use('/outbound', express.static(OUTBOUND_DIR));
 app.get('/outbound', (req, res) => {
   res.sendFile(path.join(OUTBOUND_DIR, 'index.html'));
 });

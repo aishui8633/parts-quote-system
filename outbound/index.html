@@ -294,13 +294,30 @@
     .outbound-preview .signature {
       display: flex;
       justify-content: space-between;
+      align-items: flex-end;
       margin-top: 40px;
       font-size: 14px;
+      position: relative;
     }
     .outbound-preview .signature span {
       display: inline-block;
       min-width: 150px;
       border-bottom: 1px solid #333;
+    }
+    .outbound-preview .stamp {
+      position: absolute;
+      left: 50%;
+      top: -20px;
+      transform: translateX(-50%) rotate(-8deg);
+      width: 140px;
+      height: 140px;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+    .outbound-preview .stamp img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
     
     /* 空状态 */
@@ -592,6 +609,7 @@
             
             <div class="signature">
               <div>制单人：<span>{{ viewingOutbound.createdBy || 'zsl' }}</span></div>
+              <div class="stamp"><img src="/outbound/mark2.png" alt="公司章"></div>
               <div>签收人：<span></span></div>
             </div>
           </div>
