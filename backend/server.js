@@ -6,8 +6,10 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const DATA_FILE = path.join(__dirname, '..', 'data', 'parts.json');
+const OUTBOUND_FILE = path.join(__dirname, '..', 'data', 'outbound.json');
 const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
 const ADMIN_DIR = path.join(__dirname, '..', 'admin');
+const OUTBOUND_DIR = path.join(__dirname, '..', 'outbound');
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'shuishui8633';
 const ADMIN_TOKEN = Buffer.from(ADMIN_PASSWORD).toString('base64');
 
@@ -33,6 +35,25 @@ function saveParts(parts) {
   const tempFile = `${DATA_FILE}.tmp`;
   fs.writeFileSync(tempFile, JSON.stringify(parts, null, 2), 'utf8');
   fs.renameSync(tempFile, DATA_FILE);
+}
+
+function loadOutbounds() {
+  try {
+    if (!fs.existsSync(OUTBOUND_FILE)) {
+      return [];
+    }
+    const data = fs.readFileSync(OUTBOUND_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (err) {
+    console.error('Failed to read outbounds data:', err);
+    return [];
+  }
+}
+
+function saveOutbounds(outbounds) {
+  const tempFile = `${OUTBOUND_FILE}.tmp`;
+  fs.writeFileSync(tempFile, JSON.stringify(outbounds, null, 2), 'utf8');
+  fs.renameSync(tempFile, OUTBOUND_FILE);
 }
 
 function cleanText(value) {
@@ -100,6 +121,10 @@ app.get('/', (req, res) => {
 
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(ADMIN_DIR, 'index.html'));
+});
+
+app.get('/outbound', (req, res) => {
+  res.sendFile(path.join(OUTBOUND_DIR, 'index.html'));
 });
 
 app.get('/api/parts', (req, res) => {
@@ -246,6 +271,62 @@ app.delete('/api/parts/:id', requireAdmin, (req, res) => {
   }
 
   saveParts(filtered);
+  res.json({ success: true });
+});
+
+// 出库单 API
+app.get('/api/outbound', (req, res) => {
+  const outbounds = loadOutbounds();
+  // 按创建时间倒序排列
+  outbounds.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  res.json(outbounds);
+});
+
+app.get('/api/outbound/:id', (req, res) => {
+  const outbounds = loadOutbounds();
+  const outbound = outbounds.find(item => item.id === req.params.id);
+  
+  if (!outbound) {
+    return res.status(404).json({ error: '未找到该出库单' });
+  }
+  
+  res.json(outbound);
+});
+
+app.post('/api/outbound', (req, res) => {
+  const outbounds = loadOutbounds();
+  const newOutbound = req.body;
+  
+  // 验证必填字段
+  if (!newOutbound.id) {
+    return res.status(400).json({ error: '缺少出库单号' });
+  }
+  
+  if (!newOutbound.items || newOutbound.items.length === 0) {
+    return res.status(400).json({ error: '出库单必须包含至少一个配件' });
+  }
+  
+  // 检查单号是否已存在
+  const exists = outbounds.find(item => item.id === newOutbound.id);
+  if (exists) {
+    return res.status(400).json({ error: '出库单号已存在' });
+  }
+  
+  outbounds.push(newOutbound);
+  saveOutbounds(outbounds);
+  
+  res.json({ success: true, id: newOutbound.id });
+});
+
+app.delete('/api/outbound/:id', (req, res) => {
+  const outbounds = loadOutbounds();
+  const filtered = outbounds.filter(item => item.id !== req.params.id);
+  
+  if (filtered.length === outbounds.length) {
+    return res.status(404).json({ error: '未找到该出库单' });
+  }
+  
+  saveOutbounds(filtered);
   res.json({ success: true });
 });
 

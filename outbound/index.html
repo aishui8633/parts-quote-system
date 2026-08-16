@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <title>湖南正天山河配件出库单</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Microsoft YaHei', Arial, sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    
+    /* 顶部导航 */
+    .top-nav {
+      background: #008d84;
+      padding: 15px 25px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-nav h1 {
+      color: #fff;
+      font-size: 22px;
+    }
+    .top-nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 16px;
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    
+    /* 标签页 */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .tab {
+      padding: 12px 24px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .tab.active {
+      background: #008d84;
+      color: #fff;
+      border-color: #008d84;
+    }
+    
+    /* 内容区 */
+    .content {
+      background: #fff;
+      border-radius: 0 8px 8px 8px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    /* 表单 */
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group label {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .form-group input, .form-group textarea {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: #008d84;
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    
+    /* 配件选择 */
+    .part-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr 120px 80px;
+      gap: 10px;
+      margin-bottom: 15px;
+      align-items: end;
+    }
+    .part-selector label {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .part-selector input, .part-selector select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: #008d84;
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #006d66;
+    }
+    .btn-danger {
+      background: #dc3545;
+      color: #fff;
+    }
+    .btn-danger:hover {
+      background: #c82333;
+    }
+    .btn-success {
+      background: #28a745;
+      color: #fff;
+    }
+    .btn-success:hover {
+      background: #218838;
+    }
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+    
+    /* 已选配件表格 */
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    .items-table th, .items-table td {
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    .items-table th {
+      background: #f8f9fa;
+      font-size: 14px;
+      color: #555;
+      font-weight: 600;
+    }
+    .items-table td {
+      font-size: 14px;
+    }
+    .items-table .price {
+      color: #b45309;
+      font-weight: 600;
+    }
+    .items-table .amount {
+      color: #008d84;
+      font-weight: 700;
+    }
+    
+    /* 合计 */
+    .total-row {
+      background: #f8f9fa;
+      font-weight: 700;
+    }
+    .total-row td {
+      font-size: 16px;
+      color: #008d84;
+    }
+    
+    /* 操作按钮 */
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: flex-end;
+    }
+    
+    /* 出库单列表 */
+    .list-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .list-table th, .list-table td {
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    .list-table th {
+      background: #f8f9fa;
+      font-size: 14px;
+      color: #555;
+    }
+    .list-table tr:hover {
+      background: #f8f9fa;
+    }
+    .list-table .actions-cell {
+      display: flex;
+      gap: 8px;
+    }
+    
+    /* 出库单预览/打印 */
+    .outbound-preview {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 30px;
+      background: #fff;
+      border: 1px solid #ddd;
+    }
+    .outbound-preview .header {
+      text-align: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #008d84;
+    }
+    .outbound-preview .header h2 {
+      font-size: 24px;
+      color: #008d84;
+      margin-bottom: 10px;
+    }
+    .outbound-preview .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 30px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    .outbound-preview .info-grid .label {
+      color: #666;
+    }
+    .outbound-preview .info-grid .value {
+      font-weight: 600;
+    }
+    .outbound-preview table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    .outbound-preview table th,
+    .outbound-preview table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+      font-size: 14px;
+    }
+    .outbound-preview table th {
+      background: #f8f9fa;
+      font-weight: 600;
+    }
+    .outbound-preview .total-section {
+      text-align: right;
+      font-size: 18px;
+      font-weight: 700;
+      color: #008d84;
+      margin: 15px 0;
+    }
+    .outbound-preview .remark {
+      margin: 15px 0;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .outbound-preview .signature {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+      font-size: 14px;
+    }
+    .outbound-preview .signature span {
+      display: inline-block;
+      min-width: 150px;
+      border-bottom: 1px solid #333;
+    }
+    
+    /* 空状态 */
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+    }
+    .empty-state svg {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+    
+    /* 搜索下拉 */
+    .search-dropdown {
+      position: relative;
+    }
+    .search-dropdown-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      max-height: 300px;
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 0 0 6px 6px;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .search-dropdown-item {
+      padding: 10px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .search-dropdown-item:hover {
+      background: #f0f8f7;
+    }
+    .search-dropdown-item .name {
+      font-weight: 600;
+    }
+    .search-dropdown-item .spec {
+      font-size: 12px;
+      color: #666;
+    }
+    .search-dropdown-item .price {
+      font-size: 12px;
+      color: #b45309;
+    }
+    
+    /* 打印样式 */
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .top-nav, .tabs, .actions, .no-print {
+        display: none !important;
+      }
+      .content {
+        box-shadow: none;
+        padding: 0;
+      }
+      .outbound-preview {
+        border: none;
+        max-width: 100%;
+      }
+    }
+    
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .part-selector {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <div class="top-nav">
+        <h1>湖南正天山河配件出库单</h1>
+        <a href="/">返回查询页面</a>
+      </div>
+      
+      <div class="tabs">
+        <div class="tab" :class="{ active: currentTab === 'create' }" @click="currentTab = 'create'">创建出库单</div>
+        <div class="tab" :class="{ active: currentTab === 'list' }" @click="currentTab = 'list'; loadOutboundList()">出库单列表</div>
+      </div>
+      
+      <div class="content">
+        <!-- 创建出库单 -->
+        <div v-if="currentTab === 'create'">
+          <div class="form-row">
+            <div class="form-group">
+              <label>出库单号</label>
+              <input type="text" :value="newOutbound.id" disabled>
+            </div>
+            <div class="form-group">
+              <label>出库日期</label>
+              <input type="date" v-model="newOutbound.date">
+            </div>
+            <div class="form-group">
+              <label>客户名称</label>
+              <input type="text" v-model="newOutbound.customer.name" placeholder="请输入客户名称">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group" style="grid-column: span 2;">
+              <label>备注</label>
+              <textarea v-model="newOutbound.remark" placeholder="请输入备注信息"></textarea>
+            </div>
+          </div>
+          
+          <h3 style="margin: 20px 0 15px; font-size: 16px; color: #333;">添加配件</h3>
+          
+          <div class="part-selector">
+            <div class="search-dropdown">
+              <label>配件搜索</label>
+              <input 
+                type="text" 
+                v-model="searchKeyword" 
+                placeholder="输入名称或规格搜索..."
+                @input="searchParts"
+                @focus="showDropdown = true"
+              >
+              <div class="search-dropdown-list" v-if="showDropdown && searchResults.length > 0">
+                <div 
+                  class="search-dropdown-item" 
+                  v-for="part in searchResults" 
+                  :key="part.id"
+                  @click="selectPart(part)"
+                >
+                  <div class="name">{{ part.partName }}</div>
+                  <div class="spec">{{ part.specification }}</div>
+                  <div class="price">¥{{ part.marketPrice }}</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label>规格型号</label>
+              <input type="text" :value="selectedPart?.specification || ''" disabled>
+            </div>
+            <div>
+              <label>数量</label>
+              <input type="number" v-model.number="newItem.quantity" min="1" placeholder="数量">
+            </div>
+            <div>
+              <label>&nbsp;</label>
+              <button class="btn btn-primary" @click="addItem" :disabled="!selectedPart || !newItem.quantity">添加</button>
+            </div>
+          </div>
+          
+          <!-- 已选配件列表 -->
+          <table class="items-table" v-if="newOutbound.items.length > 0">
+            <thead>
+              <tr>
+                <th>序号</th>
+                <th>配件名称</th>
+                <th>规格型号</th>
+                <th>单价</th>
+                <th>数量</th>
+                <th>金额</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in newOutbound.items" :key="index">
+                <td>{{ index + 1 }}</td>
+                <td>{{ item.partName }}</td>
+                <td>{{ item.specification }}</td>
+                <td class="price">¥{{ item.unitPrice }}</td>
+                <td>{{ item.quantity }}</td>
+                <td class="amount">¥{{ item.amount }}</td>
+                <td><button class="btn btn-danger btn-sm" @click="removeItem(index)">删除</button></td>
+              </tr>
+              <tr class="total-row">
+                <td colspan="5" style="text-align: right;">合计金额：</td>
+                <td colspan="2">¥{{ totalAmount }}</td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <div v-else class="empty-state">
+            <p>请搜索并添加配件</p>
+          </div>
+          
+          <div class="actions">
+            <button class="btn btn-success" @click="saveOutbound" :disabled="newOutbound.items.length === 0">保存出库单</button>
+            <button class="btn" style="background: #6c757d; color: #fff;" @click="resetForm">重置</button>
+          </div>
+        </div>
+        
+        <!-- 出库单列表 -->
+        <div v-if="currentTab === 'list' && !viewingOutbound">
+          <table class="list-table" v-if="outboundList.length > 0">
+            <thead>
+              <tr>
+                <th>出库单号</th>
+                <th>出库日期</th>
+                <th>客户名称</th>
+                <th>配件数量</th>
+                <th>总金额</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in outboundList" :key="item.id">
+                <td>{{ item.id }}</td>
+                <td>{{ item.date }}</td>
+                <td>{{ item.customer.name || '-' }}</td>
+                <td>{{ item.items.length }}</td>
+                <td class="price">¥{{ item.totalAmount }}</td>
+                <td class="actions-cell">
+                  <button class="btn btn-primary btn-sm" @click="viewOutbound(item)">查看</button>
+                  <button class="btn btn-danger btn-sm" @click="deleteOutbound(item.id)">删除</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div v-else class="empty-state">
+            <p>暂无出库单记录</p>
+          </div>
+        </div>
+        
+        <!-- 出库单详情/打印 -->
+        <div v-if="currentTab === 'list' && viewingOutbound" id="outboundPrintArea">
+          <div class="outbound-preview">
+            <div class="header">
+              <h2>湖南正天山河配件出库单</h2>
+              <p>出库单号：{{ viewingOutbound.id }}</p>
+            </div>
+            
+            <div class="info-grid">
+              <div>
+                <span class="label">出库单位：</span>
+                <span class="value">湖南正天</span>
+              </div>
+              <div>
+                <span class="label">生产单位：</span>
+                <span class="value">山河智能</span>
+              </div>
+              <div>
+                <span class="label">出库日期：</span>
+                <span class="value">{{ viewingOutbound.date }}</span>
+              </div>
+              <div>
+                <span class="label">客户名称：</span>
+                <span class="value">{{ viewingOutbound.customer.name || '-' }}</span>
+              </div>
+            </div>
+            
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 50px;">序号</th>
+                  <th>配件名称</th>
+                  <th>规格型号</th>
+                  <th style="width: 80px;">单价</th>
+                  <th style="width: 60px;">数量</th>
+                  <th style="width: 100px;">金额</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in viewingOutbound.items" :key="index">
+                  <td>{{ index + 1 }}</td>
+                  <td>{{ item.partName }}</td>
+                  <td>{{ item.specification }}</td>
+                  <td>¥{{ item.unitPrice }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>¥{{ item.amount }}</td>
+                </tr>
+              </tbody>
+            </table>
+            
+            <div class="total-section">
+              合计金额：¥{{ viewingOutbound.totalAmount }}
+            </div>
+            
+            <div class="remark" v-if="viewingOutbound.remark">
+              <strong>备注：</strong>{{ viewingOutbound.remark }}
+            </div>
+            
+            <div class="signature">
+              <div>制单人：<span></span></div>
+              <div>签收人：<span></span></div>
+            </div>
+          </div>
+          
+          <div class="actions no-print">
+            <button class="btn btn-primary" @click="exportPDF">导出 PDF</button>
+            <button class="btn btn-success" @click="exportExcel">导出 Excel</button>
+            <button class="btn" style="background: #6c757d; color: #fff;" @click="printOutbound">打印</button>
+            <button class="btn" style="background: #6c757d; color: #fff;" @click="viewingOutbound = null">返回列表</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+    
+    createApp({
+      data() {
+        return {
+          currentTab: 'create',
+          allParts: [],
+          searchKeyword: '',
+          searchResults: [],
+          showDropdown: false,
+          selectedPart: null,
+          newItem: {
+            quantity: 1
+          },
+          newOutbound: {
+            id: '',
+            date: new Date().toISOString().split('T')[0],
+            customer: { name: '' },
+            items: [],
+            remark: '',
+            totalAmount: 0
+          },
+          outboundList: [],
+          viewingOutbound: null
+        };
+      },
+      computed: {
+        totalAmount() {
+          return this.newOutbound.items.reduce((sum, item) => sum + item.amount, 0);
+        }
+      },
+      mounted() {
+        this.loadParts();
+        this.generateOutboundId();
+        
+        // 点击外部关闭下拉
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.search-dropdown')) {
+            this.showDropdown = false;
+          }
+        });
+      },
+      methods: {
+        async loadParts() {
+          try {
+            const res = await fetch('/api/parts');
+            this.allParts = await res.json();
+          } catch (err) {
+            console.error('加载配件失败:', err);
+          }
+        },
+        
+        generateOutboundId() {
+          const today = new Date();
+          const dateStr = today.getFullYear().toString() +
+            (today.getMonth() + 1).toString().padStart(2, '0') +
+            today.getDate().toString().padStart(2, '0');
+          
+          // 获取今天的出库单数量
+          fetch('/api/outbound')
+            .then(res => res.json())
+            .then(list => {
+              const todayOutbounds = list.filter(item => item.id.includes(dateStr));
+              const seq = (todayOutbounds.length + 1).toString().padStart(3, '0');
+              this.newOutbound.id = `CK${dateStr}${seq}`;
+            })
+            .catch(() => {
+              this.newOutbound.id = `CK${dateStr}001`;
+            });
+        },
+        
+        searchParts() {
+          if (!this.searchKeyword.trim()) {
+            this.searchResults = [];
+            return;
+          }
+          const keyword = this.searchKeyword.toLowerCase();
+          this.searchResults = this.allParts.filter(part => 
+            part.partName.toLowerCase().includes(keyword) ||
+            part.specification.toLowerCase().includes(keyword)
+          ).slice(0, 20);
+        },
+        
+        selectPart(part) {
+          this.selectedPart = part;
+          this.searchKeyword = part.partName;
+          this.showDropdown = false;
+        },
+        
+        addItem() {
+          if (!this.selectedPart || !this.newItem.quantity) return;
+          
+          const item = {
+            partId: this.selectedPart.id,
+            partName: this.selectedPart.partName,
+            specification: this.selectedPart.specification,
+            unitPrice: this.selectedPart.marketPrice,
+            quantity: this.newItem.quantity,
+            amount: this.selectedPart.marketPrice * this.newItem.quantity
+          };
+          
+          this.newOutbound.items.push(item);
+          this.selectedPart = null;
+          this.searchKeyword = '';
+          this.newItem.quantity = 1;
+        },
+        
+        removeItem(index) {
+          this.newOutbound.items.splice(index, 1);
+        },
+        
+        resetForm() {
+          this.newOutbound = {
+            id: this.newOutbound.id,
+            date: new Date().toISOString().split('T')[0],
+            customer: { name: '' },
+            items: [],
+            remark: '',
+            totalAmount: 0
+          };
+          this.selectedPart = null;
+          this.searchKeyword = '';
+        },
+        
+        async saveOutbound() {
+          if (this.newOutbound.items.length === 0) return;
+          
+          const data = {
+            ...this.newOutbound,
+            totalAmount: this.totalAmount,
+            outboundUnit: '湖南正天',
+            manufacturer: '山河智能',
+            createdAt: new Date().toISOString()
+          };
+          
+          try {
+            const res = await fetch('/api/outbound', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            
+            if (result.success) {
+              alert('出库单保存成功！');
+              this.resetForm();
+              this.generateOutboundId();
+            }
+          } catch (err) {
+            alert('保存失败：' + err.message);
+          }
+        },
+        
+        async loadOutboundList() {
+          try {
+            const res = await fetch('/api/outbound');
+            this.outboundList = await res.json();
+          } catch (err) {
+            console.error('加载出库单列表失败:', err);
+          }
+        },
+        
+        async viewOutbound(item) {
+          try {
+            const res = await fetch(`/api/outbound/${item.id}`);
+            this.viewingOutbound = await res.json();
+          } catch (err) {
+            console.error('加载出库单详情失败:', err);
+          }
+        },
+        
+        async deleteOutbound(id) {
+          if (!confirm(`确定要删除出库单 ${id} 吗？`)) return;
+          
+          try {
+            const res = await fetch(`/api/outbound/${id}`, { method: 'DELETE' });
+            const result = await res.json();
+            if (result.success) {
+              this.loadOutboundList();
+            }
+          } catch (err) {
+            alert('删除失败：' + err.message);
+          }
+        },
+        
+        exportPDF() {
+          const element = document.getElementById('outboundPrintArea');
+          const opt = {
+            margin: 10,
+            filename: `${this.viewingOutbound.id}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          };
+          html2pdf().set(opt).from(element).save();
+        },
+        
+        exportExcel() {
+          const data = this.viewingOutbound;
+          const wsData = [
+            ['湖南正天山河配件出库单'],
+            [''],
+            ['出库单号', data.id, '出库日期', data.date],
+            ['出库单位', '湖南正天', '生产单位', '山河智能'],
+            ['客户名称', data.customer.name || '', '', ''],
+            [''],
+            ['序号', '配件名称', '规格型号', '单价', '数量', '金额'],
+            ...data.items.map((item, i) => [
+              i + 1,
+              item.partName,
+              item.specification,
+              item.unitPrice,
+              item.quantity,
+              item.amount
+            ]),
+            [''],
+            ['', '', '', '', '合计', data.totalAmount],
+            [''],
+            ['备注', data.remark || ''],
+            [''],
+            ['制单人：', '', '签收人：', '']
+          ];
+          
+          const ws = XLSX.utils.aoa_to_sheet(wsData);
+          ws['!cols'] = [{ wch: 8 }, { wch: 25 }, { wch: 20 }, { wch: 12 }, { wch: 8 }, { wch: 12 }];
+          
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, '出库单');
+          XLSX.writeFile(wb, `${data.id}.xlsx`);
+        },
+        
+        printOutbound() {
+          window.print();
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
