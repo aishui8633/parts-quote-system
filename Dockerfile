@@ -15,6 +15,7 @@ COPY backend/ ./backend/
 COPY frontend/ ./frontend/
 COPY admin/ ./admin/
 COPY data/ ./data/
+COPY outbound/ ./outbound/
 
 # 暴露端口
 EXPOSE 3000
