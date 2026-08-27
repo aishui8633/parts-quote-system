@@ -5,353 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <title>山河配件报价系统 - 后台管理</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Microsoft YaHei", Arial, sans-serif;
-      color: #1f2933;
-      background: #f4f7f6;
-    }
-
-    .topbar {
-      background: #008d84;
-      color: #fff;
-      padding: 18px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .topbar h1 {
-      margin: 0;
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .topbar a {
-      color: #fff;
-      text-decoration: none;
-      font-size: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      border-radius: 6px;
-      padding: 8px 12px;
-    }
-
-    main {
-      width: min(1200px, calc(100% - 32px));
-      margin: 24px auto;
-      display: grid;
-      grid-template-columns: minmax(320px, 420px) 1fr;
-      gap: 20px;
-      align-items: start;
-    }
-
-    .panel {
-      background: #fff;
-      border: 1px solid #dde5e2;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
-    }
-
-    .panel h2 {
-      margin: 0 0 16px;
-      font-size: 18px;
-    }
-
-    label {
-      display: block;
-      margin: 14px 0 6px;
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    input {
-      width: 100%;
-      height: 42px;
-      border: 1px solid #c8d4d1;
-      border-radius: 6px;
-      padding: 0 12px;
-      font-size: 15px;
-      outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-
-    input:focus {
-      border-color: #008d84;
-      box-shadow: 0 0 0 3px rgba(0, 141, 132, 0.14);
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0 12px;
-    }
-
-    button {
-      width: 100%;
-      height: 44px;
-      margin-top: 18px;
-      border: 0;
-      border-radius: 6px;
-      background: #008d84;
-      color: #fff;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      cursor: wait;
-      opacity: 0.7;
-    }
-
-    button.btn-cancel {
-      background: #64748b;
-    }
-
-    .message {
-      min-height: 22px;
-      margin-top: 12px;
-      font-size: 14px;
-      color: #0f766e;
-    }
-
-    .message.error {
-      color: #b42318;
-    }
-
-    .export-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .export-actions a {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 42px;
-      border: 1px solid #008d84;
-      border-radius: 6px;
-      color: #00756e;
-      background: #eefaf8;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .stats {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .stat {
-      flex: 1;
-      border: 1px solid #dde5e2;
-      border-radius: 8px;
-      padding: 12px;
-      background: #fafcfb;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 24px;
-      color: #008d84;
-    }
-
-    .stat span {
-      font-size: 13px;
-      color: #64748b;
-    }
-
-    /* 搜索框 */
-    .search-box {
-      margin-bottom: 16px;
-      position: relative;
-    }
-
-    .search-box input {
-      padding-right: 40px;
-    }
-
-    .search-box .search-clear {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: #64748b;
-      font-size: 18px;
-      cursor: pointer;
-      width: auto;
-      height: auto;
-      margin: 0;
-      padding: 4px 8px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
-    th, td {
-      text-align: left;
-      padding: 10px 8px;
-      border-bottom: 1px solid #e5ece9;
-      vertical-align: middle;
-    }
-
-    th {
-      color: #475569;
-      font-size: 13px;
-      background: #f8faf9;
-    }
-
-    .price {
-      color: #b45309;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .actions {
-      white-space: nowrap;
-    }
-
-    .btn-edit, .btn-delete {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 4px;
-      font-size: 13px;
-      cursor: pointer;
-      margin-right: 4px;
-      width: auto;
-      height: auto;
-      margin-top: 0;
-    }
-
-    .btn-edit {
-      background: #e0f2fe;
-      color: #0369a1;
-    }
-
-    .btn-edit:hover {
-      background: #bae6fd;
-    }
-
-    .btn-delete {
-      background: #fee2e2;
-      color: #b91c1c;
-    }
-
-    .btn-delete:hover {
-      background: #fecaca;
-    }
-
-    /* 分页 */
-    .pagination {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      margin-top: 16px;
-      flex-wrap: wrap;
-    }
-
-    .pagination button {
-      width: auto;
-      height: 36px;
-      min-width: 36px;
-      padding: 0 12px;
-      margin: 0;
-      font-size: 14px;
-      background: #f1f5f9;
-      color: #475569;
-    }
-
-    .pagination button:hover:not(:disabled) {
-      background: #e2e8f0;
-    }
-
-    .pagination button.active {
-      background: #008d84;
-      color: #fff;
-    }
-
-    .pagination .page-info {
-      font-size: 14px;
-      color: #64748b;
-      padding: 0 8px;
-    }
-
-    /* 编辑模式提示 */
-    .edit-mode-banner {
-      background: #fef3c7;
-      border: 1px solid #f59e0b;
-      border-radius: 6px;
-      padding: 10px 14px;
-      margin-bottom: 16px;
-      font-size: 14px;
-      color: #92400e;
-      display: none;
-    }
-
-    .edit-mode-banner.show {
-      display: block;
-    }
-
-    .login-screen {
-      width: min(420px, calc(100% - 32px));
-      margin: 60px auto;
-    }
-
-    body.locked main {
-      display: none;
-    }
-
-    body.unlocked .login-screen {
-      display: none;
-    }
-
-    .topbar .logout {
-      width: auto;
-      height: auto;
-      margin: 0;
-      padding: 8px 12px;
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      background: transparent;
-      font-size: 14px;
-    }
-
-    body.locked .logout {
-      display: none;
-    }
-
-    @media (max-width: 820px) {
-      main {
-        grid-template-columns: 1fr;
-      }
-
-      .topbar {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
   <header class="topbar">
     <h1>山河配件报价系统后台</h1>
+    <nav class="topbar-nav">
+      <button class="nav-btn active" data-page="parts">配件管理</button>
+      <button class="nav-btn" data-page="log">操作日志</button>
+      <button class="nav-btn" data-page="visit">访问统计</button>
+    </nav>
     <div>
       <a href="/">返回查询页面</a>
       <button class="logout" id="logoutButton" type="button">退出后台</button>
@@ -368,7 +31,7 @@
     </form>
   </section>
 
-  <main>
+  <main id="page-parts">
     <section class="panel">
       <h2 id="formTitle">新增零件</h2>
       <div id="editBanner" class="edit-mode-banner">
@@ -420,6 +83,46 @@
       <div class="export-actions">
         <a id="exportJson" href="#" download>导出 JSON 备份</a>
         <a id="exportCsv" href="#" download>导出 CSV 表格</a>
+        <a id="importBtn" href="#" class="btn-import">导入 Excel</a>
+      </div>
+
+      <!-- 导入模态框 -->
+      <div id="importModal" class="modal hidden">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>导入配件数据</h3>
+            <button class="modal-close" id="importModalClose">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div id="importStep1">
+              <p>请选择 Excel 文件（.xlsx 或 .xls）</p>
+              <p class="import-hint">格式要求：零件名称、规格型号、价格（3列）</p>
+              <input type="file" id="fileInput" accept=".xlsx,.xls">
+            </div>
+            <div id="importStep2" class="hidden">
+              <div id="importResult"></div>
+              <div id="importPreview" class="hidden">
+                <h4>预览（前10条）</h4>
+                <div class="preview-table-wrapper">
+                  <table class="preview-table">
+                    <thead>
+                      <tr>
+                        <th>零件名称</th>
+                        <th>规格型号</th>
+                        <th>价格</th>
+                      </tr>
+                    </thead>
+                    <tbody id="previewBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="importCancelBtn" class="btn-cancel">取消</button>
+            <button id="importConfirmBtn" class="btn-confirm hidden" disabled>确认导入</button>
+          </div>
+        </div>
       </div>
 
       <div class="search-box">
@@ -444,361 +147,75 @@
     </section>
   </main>
 
-  <script>
-    const TOKEN_KEY = 'partsQuoteToken';
-    const PAGE_SIZE = 20;
+  <main id="page-log" class="hidden">
+    <section class="panel log-panel">
+      <h2>操作日志</h2>
+      <div class="log-filter">
+        <select id="logTypeFilter">
+          <option value="">全部类型</option>
+          <option value="新增">新增</option>
+          <option value="编辑">编辑</option>
+          <option value="删除">删除</option>
+        </select>
+      </div>
+      <table class="log-table">
+        <thead>
+          <tr>
+            <th>时间</th>
+            <th>类型</th>
+            <th>配件ID</th>
+            <th>配件名称</th>
+            <th>变更详情</th>
+          </tr>
+        </thead>
+        <tbody id="logList"></tbody>
+      </table>
+    </section>
+  </main>
 
-    // 状态
-    let allParts = [];
-    let filteredParts = [];
-    let currentPageNum = 1;
-    let editingPartId = null;
-    let searchTimer = null;
+  <main id="page-visit" class="hidden">
+    <section class="panel visit-panel">
+      <h2>访问统计</h2>
+      <div class="visit-stats">
+        <div class="stat-card">
+          <div class="stat-label">总访问量</div>
+          <div class="stat-value" id="totalVisits">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">今日访问</div>
+          <div class="stat-value" id="todayVisits">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">独立访客</div>
+          <div class="stat-value" id="uniqueIPs">0</div>
+        </div>
+      </div>
+      <h3>最近7天访问趋势</h3>
+      <div class="visit-chart" id="visitChart"></div>
+      <h3>访问记录</h3>
+      <table class="log-table">
+        <thead>
+          <tr>
+            <th>访问时间</th>
+            <th>IP地址</th>
+            <th>浏览器信息</th>
+          </tr>
+        </thead>
+        <tbody id="visitList"></tbody>
+      </table>
+    </section>
+  </main>
 
-    // DOM
-    const form = document.getElementById('partForm');
-    const loginForm = document.getElementById('loginForm');
-    const message = document.getElementById('message');
-    const loginMessage = document.getElementById('loginMessage');
-    const submitButton = document.getElementById('submitButton');
-    const cancelEditButton = document.getElementById('cancelEditButton');
-    const loginButton = document.getElementById('loginButton');
-    const logoutButton = document.getElementById('logoutButton');
-    const exportJson = document.getElementById('exportJson');
-    const exportCsv = document.getElementById('exportCsv');
-    const partsList = document.getElementById('partsList');
-    const partCount = document.getElementById('partCount');
-    const filteredCount = document.getElementById('filteredCount');
-    const currentPageEl = document.getElementById('currentPage');
-    const pagination = document.getElementById('pagination');
-    const searchInput = document.getElementById('searchInput');
-    const searchClear = document.getElementById('searchClear');
-    const formTitle = document.getElementById('formTitle');
-    const editBanner = document.getElementById('editBanner');
-    const editId = document.getElementById('editId');
-    const editName = document.getElementById('editName');
-
-    document.body.classList.add('locked');
-
-    function getToken() {
-      return localStorage.getItem(TOKEN_KEY) || '';
-    }
-
-    function setAuthState(isAuthenticated) {
-      document.body.classList.toggle('locked', !isAuthenticated);
-      document.body.classList.toggle('unlocked', isAuthenticated);
-
-      if (isAuthenticated) {
-        const token = encodeURIComponent(getToken());
-        exportJson.href = `/api/parts/export.json?token=${token}`;
-        exportCsv.href = `/api/parts/export.csv?token=${token}`;
-      }
-    }
-
-    function setMessage(text, isError = false) {
-      message.textContent = text;
-      message.classList.toggle('error', isError);
-    }
-
-    function setLoginMessage(text, isError = false) {
-      loginMessage.textContent = text;
-      loginMessage.classList.toggle('error', isError);
-    }
-
-    function formatPrice(price) {
-      return `¥${Math.floor(Number(price) || 0).toLocaleString()}`;
-    }
-
-    // 加载所有数据
-    async function loadParts() {
-      const response = await fetch('/api/parts');
-      allParts = await response.json();
-      partCount.textContent = allParts.length;
-      applyFilter();
-    }
-
-    // 应用搜索过滤
-    function applyFilter() {
-      const keyword = searchInput.value.trim().toLowerCase();
-      if (!keyword) {
-        filteredParts = [...allParts];
-      } else {
-        filteredParts = allParts.filter(part => {
-          const name = String(part.partName || '').toLowerCase();
-          const spec = String(part.specification || '').toLowerCase();
-          return name.includes(keyword) || spec.includes(keyword);
-        });
-      }
-      filteredCount.textContent = filteredParts.length;
-      currentPageNum = 1;
-      renderTable();
-      renderPagination();
-    }
-
-    // 渲染表格
-    function renderTable() {
-      const start = (currentPageNum - 1) * PAGE_SIZE;
-      const end = start + PAGE_SIZE;
-      const pageData = filteredParts.slice(start, end);
-
-      if (pageData.length === 0) {
-        partsList.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#64748b;padding:20px;">无数据</td></tr>';
-        return;
-      }
-
-      partsList.innerHTML = pageData.map(part => `
-        <tr>
-          <td>${part.id}</td>
-          <td>${escapeHtml(part.partName || '')}</td>
-          <td>${escapeHtml(part.specification || '')}</td>
-          <td class="price">${formatPrice(part.marketPrice)}</td>
-          <td class="actions">
-            <button class="btn-edit" onclick="startEdit(${part.id})">编辑</button>
-            <button class="btn-delete" onclick="deletePart(${part.id}, '${escapeHtml(part.partName || '').replace(/'/g, "\\'")}')">删除</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    // 渲染分页
-    function renderPagination() {
-      const totalPages = Math.ceil(filteredParts.length / PAGE_SIZE) || 1;
-      let html = '';
-
-      // 上一页
-      html += `<button ${currentPageNum === 1 ? 'disabled' : ''} onclick="goToPage(${currentPageNum - 1})">上一页</button>`;
-
-      // 页码
-      const maxButtons = 5;
-      let startPage = Math.max(1, currentPageNum - Math.floor(maxButtons / 2));
-      let endPage = Math.min(totalPages, startPage + maxButtons - 1);
-      if (endPage - startPage < maxButtons - 1) {
-        startPage = Math.max(1, endPage - maxButtons + 1);
-      }
-
-      if (startPage > 1) {
-        html += `<button onclick="goToPage(1)">1</button>`;
-        if (startPage > 2) html += `<span class="page-info">...</span>`;
-      }
-
-      for (let i = startPage; i <= endPage; i++) {
-        html += `<button class="${i === currentPageNum ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
-      }
-
-      if (endPage < totalPages) {
-        if (endPage < totalPages - 1) html += `<span class="page-info">...</span>`;
-        html += `<button onclick="goToPage(${totalPages})">${totalPages}</button>`;
-      }
-
-      // 下一页
-      html += `<button ${currentPageNum === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPageNum + 1})">下一页</button>`;
-
-      pagination.innerHTML = html;
-      currentPageEl.textContent = currentPageNum;
-    }
-
-    function goToPage(page) {
-      const totalPages = Math.ceil(filteredParts.length / PAGE_SIZE) || 1;
-      if (page < 1 || page > totalPages) return;
-      currentPageNum = page;
-      renderTable();
-      renderPagination();
-    }
-
-    // 搜索输入
-    searchInput.addEventListener('input', () => {
-      clearTimeout(searchTimer);
-      searchTimer = setTimeout(() => {
-        searchClear.style.display = searchInput.value ? 'block' : 'none';
-        applyFilter();
-      }, 300);
-    });
-
-    searchClear.addEventListener('click', () => {
-      searchInput.value = '';
-      searchClear.style.display = 'none';
-      applyFilter();
-    });
-
-    // 编辑功能
-    window.startEdit = function(id) {
-      const part = allParts.find(p => p.id === id);
-      if (!part) return;
-
-      editingPartId = id;
-      form.partName.value = part.partName || '';
-      form.specification.value = part.specification || '';
-      form.marketPrice.value = part.marketPrice || '';
-      form.brand.value = part.brand || '山河智能';
-      form.unit.value = part.unit || 'PCS';
-
-      formTitle.textContent = '编辑零件';
-      submitButton.textContent = '更新零件';
-      cancelEditButton.style.display = 'block';
-      editBanner.classList.add('show');
-      editId.textContent = id;
-      editName.textContent = part.partName || '';
-
-      // 滚动到表单
-      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    };
-
-    cancelEditButton.addEventListener('click', () => {
-      resetForm();
-    });
-
-    function resetForm() {
-      editingPartId = null;
-      form.reset();
-      form.brand.value = '山河智能';
-      form.unit.value = 'PCS';
-      formTitle.textContent = '新增零件';
-      submitButton.textContent = '保存到数据库';
-      cancelEditButton.style.display = 'none';
-      editBanner.classList.remove('show');
-      setMessage('');
-    }
-
-    // 删除功能
-    window.deletePart = async function(id, name) {
-      if (!confirm(`确定要删除「${name}」(编号 ${id}) 吗？\n此操作不可恢复！`)) return;
-
-      try {
-        const response = await fetch(`/api/parts/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${getToken()}`
-          }
-        });
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || '删除失败');
-        }
-
-        setMessage(`已删除「${name}」`);
-        await loadParts();
-      } catch (err) {
-        setMessage(err.message, true);
-      }
-    };
-
-    // 表单提交
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      submitButton.disabled = true;
-      setMessage('正在保存...');
-
-      const formData = new FormData(form);
-      const payload = Object.fromEntries(formData.entries());
-
-      try {
-        let response, result;
-
-        if (editingPartId) {
-          // 更新模式
-          response = await fetch(`/api/parts/${editingPartId}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${getToken()}`
-            },
-            body: JSON.stringify(payload)
-          });
-        } else {
-          // 新增模式
-          response = await fetch('/api/parts', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${getToken()}`
-            },
-            body: JSON.stringify(payload)
-          });
-        }
-
-        result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || '保存失败');
-        }
-
-        if (editingPartId) {
-          setMessage('零件信息已更新。');
-          resetForm();
-        } else {
-          setMessage(result.updatedExisting ? '已更新已有零件信息。' : '已新增零件并写入数据库。');
-          form.partName.value = '';
-          form.specification.value = '';
-          form.marketPrice.value = '';
-          form.partName.focus();
-        }
-
-        await loadParts();
-      } catch (err) {
-        setMessage(err.message, true);
-      } finally {
-        submitButton.disabled = false;
-      }
-    });
-
-    // HTML 转义
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    // 登录
-    loginForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      loginButton.disabled = true;
-      setLoginMessage('正在验证...');
-
-      try {
-        const response = await fetch('/api/admin/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password: loginForm.password.value })
-        });
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || '密码错误');
-        }
-
-        localStorage.setItem(TOKEN_KEY, result.token);
-        loginForm.password.value = '';
-        setAuthState(true);
-        setLoginMessage('');
-        await loadParts();
-      } catch (err) {
-        setLoginMessage(err.message, true);
-      } finally {
-        loginButton.disabled = false;
-      }
-    });
-
-    logoutButton.addEventListener('click', () => {
-      localStorage.removeItem(TOKEN_KEY);
-      setAuthState(false);
-      setMessage('');
-      setLoginMessage('');
-      loginForm.password.focus();
-    });
-
-    // 初始化
-    if (getToken()) {
-      setAuthState(true);
-      loadParts().catch((err) => {
-        localStorage.removeItem(TOKEN_KEY);
-        setAuthState(false);
-        setLoginMessage(`请重新登录：${err.message}`, true);
-      });
-    } else {
-      setAuthState(false);
-      loginForm.password.focus();
-    }
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/table.js"></script>
+  <script src="js/form.js"></script>
+  <script src="js/log.js"></script>
+  <script src="js/visit.js"></script>
+  <script src="js/import.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

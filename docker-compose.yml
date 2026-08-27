@@ -1,31 +1,17 @@
-version: '3.8'
-
 services:
-  # 配件报价系统
   parts-quote:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: aishui8633/parts-quote-system:main
     container_name: sunward-parts-quote
     ports:
-      - "3000:3000"
+      - "8373:3000"
     volumes:
-      # 数据卷挂载，方便更新价格数据
-      - ./data:/app/data
-      # 可选：挂载前端文件，方便修改
-      - ./frontend:/app/frontend
-    restart: unless-stopped
+      # 数据持久化 - 价格数据
+      - /vol1/1000/docker/parts-quote-system/data:/app/data
+      # 开发调试 - admin 目录挂载
+      - /vol1/1000/docker/parts-quote-system/admin:/app/admin
+    restart: always
     environment:
       - NODE_ENV=production
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/parts"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
     networks:
-      - parts-network
-
-networks:
-  parts-network:
-    driver: bridge
+      - bridge
